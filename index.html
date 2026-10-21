@@ -1,0 +1,494 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Workinton - Mülk Sahibi Ön Değerlendirme ve Lokasyon Analiz Formu</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                    },
+                    colors: {
+                        brand: {
+                            red: '#e30613',
+                            darkRed: '#b8040f',
+                            dark: '#0f172a',
+                            navy: '#1e293b',
+                            lightBg: '#f8fafc',
+                            cardBorder: '#e2e8f0',
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        body { font-family: 'Inter', sans-serif; background-color: #0f172a; color: #1e293b; }
+        .gradient-header { background: linear-gradient(135deg, #0b1329 0%, #1e293b 100%); }
+        .score-badge { transition: all 0.3s ease; }
+    </style>
+</head>
+<body class="min-h-screen bg-slate-900 text-slate-800 antialiased py-6 px-3 sm:px-6">
+
+    <div class="max-w-5xl mx-auto bg-white rounded-2xl shadow-2xl overflow-hidden border border-slate-700">
+        
+        <!-- HEADER BAR -->
+        <header class="gradient-header text-white p-6 sm:p-8 border-b-4 border-brand-red relative">
+            <div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
+                <div>
+                    <div class="flex items-center gap-3 mb-2">
+                        <span class="text-2xl sm:text-3xl font-black tracking-tight text-white">WORK<span class="text-brand-red">INTON</span></span>
+                        <span class="bg-brand-red/20 text-red-200 border border-brand-red/40 text-xs font-bold px-2.5 py-1 rounded-full uppercase tracking-wider">İş Geliştirme Portalı</span>
+                    </div>
+                    <h1 class="text-xl sm:text-2xl font-extrabold text-slate-100">Mülk Sahibi Ön Değerlendirme &amp; Lokasyon Analiz Formu</h1>
+                    <p class="text-xs sm:text-sm text-slate-400 mt-1">Aday gayrimenkulünüzü Workinton esnek ofis ağına katmak için bilgileri doldurunuz.</p>
+                </div>
+                
+                <div class="flex items-center gap-2 self-stretch md:self-auto justify-end">
+                    <button id="viewToggleBtn" onclick="toggleView()" class="bg-slate-800 hover:bg-slate-700 text-white text-xs sm:text-sm font-semibold px-4 py-2.5 rounded-xl border border-slate-600 transition flex items-center gap-2">
+                        <i class="fa-solid fa-calculator text-brand-red"></i>
+                        <span id="viewToggleText">Ekip / Skor Modu</span>
+                    </button>
+                </div>
+            </div>
+        </header>
+
+        <!-- NAVIGATION / MODE BAR -->
+        <div class="bg-slate-100 border-b border-slate-200 px-6 py-3 flex flex-wrap justify-between items-center gap-4 text-xs font-semibold text-slate-600">
+            <div class="flex items-center gap-6">
+                <span class="flex items-center gap-2 text-slate-900 font-bold">
+                    <i class="fa-solid fa-clipboard-list text-brand-red"></i> Başvuru Tipi: Esnek Ofis &amp; Yönetim Anlaşması
+                </span>
+            </div>
+            <div class="text-slate-500">
+                <i class="fa-solid fa-clock"></i> Tahmini Doldurma Süresi: ~4 Dakika
+            </div>
+        </div>
+
+        <!-- FORM CONTENT AREA -->
+        <form id="evaluationForm" onsubmit="handleFormSubmit(event)" class="p-6 sm:p-10 space-y-10">
+            
+            <section class="space-y-4">
+                <div class="flex items-center gap-3 border-b border-slate-200 pb-3">
+                    <div class="w-8 h-8 rounded-lg bg-red-100 text-brand-red flex items-center justify-center font-extrabold text-sm">1</div>
+                    <h2 class="text-lg font-bold text-slate-900">Mülk Sahibi ve İletişim Bilgileri</h2>
+                </div>
+                
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div>
+                        <label class="block text-xs font-bold text-slate-700 mb-1">Mülk Sahibi / Firma Unvanı *</label>
+                        <input type="text" id="ownerName" required placeholder="Örn: Yılmaz Holding A.Ş." class="w-full bg-slate-50 border border-slate-300 rounded-lg p-2.5 text-sm focus:ring-2 focus:ring-brand-red focus:outline-none">
+                    </div>
+                    <div>
+                        <label class="block text-xs font-bold text-slate-700 mb-1">Yetkili Kişi &amp; Unvanı *</label>
+                        <input type="text" id="contactPerson" required placeholder="Örn: Ahmet Yılmaz - Yönetim Kurulu Üyesi" class="w-full bg-slate-50 border border-slate-300 rounded-lg p-2.5 text-sm focus:ring-2 focus:ring-brand-red focus:outline-none">
+                    </div>
+                    <div>
+                        <label class="block text-xs font-bold text-slate-700 mb-1">Telefon Numarası *</label>
+                        <input type="tel" id="phone" required placeholder="05XX XXX XX XX" class="w-full bg-slate-50 border border-slate-300 rounded-lg p-2.5 text-sm focus:ring-2 focus:ring-brand-red focus:outline-none">
+                    </div>
+                    <div>
+                        <label class="block text-xs font-bold text-slate-700 mb-1">E-posta Adresi *</label>
+                        <input type="email" id="email" required placeholder="ahmet@company.com" class="w-full bg-slate-50 border border-slate-300 rounded-lg p-2.5 text-sm focus:ring-2 focus:ring-brand-red focus:outline-none">
+                    </div>
+                    <div class="md:col-span-2">
+                        <label class="block text-xs font-bold text-slate-700 mb-1">Temsil Durumu *</label>
+                        <select id="representStatus" class="w-full bg-slate-50 border border-slate-300 rounded-lg p-2.5 text-sm focus:ring-2 focus:ring-brand-red focus:outline-none">
+                            <option value="owner">Doğrudan Mülk Sahibi</option>
+                            <option value="broker">Sözleşmeli Gayrimenkul Danışmanı / Broker</option>
+                            <option value="representative">Vekil / Temsilci</option>
+                        </select>
+                    </div>
+                </div>
+            </section>
+
+            <section class="space-y-4">
+                <div class="flex items-center gap-3 border-b border-slate-200 pb-3">
+                    <div class="w-8 h-8 rounded-lg bg-red-100 text-brand-red flex items-center justify-center font-extrabold text-sm">2</div>
+                    <h2 class="text-lg font-bold text-slate-900">Gayrimenkul Konum ve Metrekare Bilgileri</h2>
+                </div>
+
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                    <div class="md:col-span-2">
+                        <label class="block text-xs font-bold text-slate-700 mb-1">Plaza / Bina Adı ve Açık Adres *</label>
+                        <input type="text" id="buildingAddress" required placeholder="Örn: Maslak A+ Plaza, Büyükdere Cad. No:142 Şişli/İstanbul" class="w-full bg-slate-50 border border-slate-300 rounded-lg p-2.5 text-sm focus:ring-2 focus:ring-brand-red focus:outline-none">
+                    </div>
+                    <div>
+                        <label class="block text-xs font-bold text-slate-700 mb-1">İl / İlçe *</label>
+                        <input type="text" id="cityDistrict" required placeholder="Örn: İstanbul / Maslak" class="w-full bg-slate-50 border border-slate-300 rounded-lg p-2.5 text-sm focus:ring-2 focus:ring-brand-red focus:outline-none">
+                    </div>
+
+                    <div>
+                        <label class="block text-xs font-bold text-slate-700 mb-1">Toplam Brüt Alan (m²) *</label>
+                        <input type="number" id="grossArea" oninput="calculateScore()" required placeholder="Örn: 1200" class="w-full bg-slate-50 border border-slate-300 rounded-lg p-2.5 text-sm focus:ring-2 focus:ring-brand-red focus:outline-none">
+                    </div>
+                    <div>
+                        <label class="block text-xs font-bold text-slate-700 mb-1">Net Kullanılabilir Alan (m²) *</label>
+                        <input type="number" id="netArea" oninput="calculateScore()" required placeholder="Örn: 900" class="w-full bg-slate-50 border border-slate-300 rounded-lg p-2.5 text-sm focus:ring-2 focus:ring-brand-red focus:outline-none">
+                    </div>
+                    <div>
+                        <label class="block text-xs font-bold text-slate-700 mb-1">Net/Brüt Verimlilik Oranı</label>
+                        <input type="text" id="efficiencyDisplay" readonly placeholder="Otomatik Hesaplanır" class="w-full bg-slate-200 border border-slate-300 rounded-lg p-2.5 text-sm font-bold text-slate-700">
+                    </div>
+
+                    <div>
+                        <label class="block text-xs font-bold text-slate-700 mb-1">Metro / Metrobüs Yürüme Mesafesi *</label>
+                        <select id="metroDist" onchange="calculateScore()" class="w-full bg-slate-50 border border-slate-300 rounded-lg p-2.5 text-sm focus:ring-2 focus:ring-brand-red focus:outline-none">
+                            <option value="10">0 - 200 Metre (Aynı Bina / Bitişik - Max 2 dk)</option>
+                            <option value="8">200 - 500 Metre (Max 5 dk Yürüme)</option>
+                            <option value="5">500 - 1000 Metre (10 dk Yürüme)</option>
+                            <option value="2">1000+ Metre (Ring / Araç Gerektirir)</option>
+                        </select>
+                    </div>
+
+                    <div>
+                        <label class="block text-xs font-bold text-slate-700 mb-1">Tavan Yüksekliği (Süpürgelikten Betona) *</label>
+                        <select id="ceilingHeight" onchange="calculateScore()" class="w-full bg-slate-50 border border-slate-300 rounded-lg p-2.5 text-sm focus:ring-2 focus:ring-brand-red focus:outline-none">
+                            <option value="10">3.20m ve Üzeri (Çok Yüksek / Ferah)</option>
+                            <option value="8">2.80m - 3.19m (İdeal Esnek Ofis Standardı)</option>
+                            <option value="4">2.50m - 2.79m (Düşük - Asma Tavan Zorluğu)</option>
+                            <option value="1">2.50m Altı (Uygun Değil)</option>
+                        </select>
+                    </div>
+
+                    <div>
+                        <label class="block text-xs font-bold text-slate-700 mb-1">Otopark Kapasitesi (m² Başına Araç) *</label>
+                        <select id="parkingRatio" onchange="calculateScore()" class="w-full bg-slate-50 border border-slate-300 rounded-lg p-2.5 text-sm focus:ring-2 focus:ring-brand-red focus:outline-none">
+                            <option value="10">Her 50 m² için 1 Araç Tahsisli</option>
+                            <option value="8">Her 100 m² için 1 Araç Tahsisli</option>
+                            <option value="5">Her 150 m² için 1 Araç Tahsisli</option>
+                            <option value="2">Otopark Yok / Kısıtlı Vale</option>
+                        </select>
+                    </div>
+                </div>
+            </section>
+
+            <section class="space-y-4">
+                <div class="flex items-center gap-3 border-b border-slate-200 pb-3">
+                    <div class="w-8 h-8 rounded-lg bg-red-100 text-brand-red flex items-center justify-center font-extrabold text-sm">3</div>
+                    <h2 class="text-lg font-bold text-slate-900">Teknik ve İklimlendirme Altyapısı (Kritik Kriterler)</h2>
+                </div>
+
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div>
+                        <label class="block text-xs font-bold text-slate-700 mb-1">İklimlendirme &amp; Havalandırma (HVAC) *</label>
+                        <select id="hvacStatus" onchange="calculateScore()" class="w-full bg-slate-50 border border-slate-300 rounded-lg p-2.5 text-sm focus:ring-2 focus:ring-brand-red focus:outline-none">
+                            <option value="10">VRV/VRF + Yüksek Kapasiteli Taze Hava Santrali Var</option>
+                            <option value="7">VRF Sistemi Var, Taze Hava Santrali Kısmi/Yetersiz</option>
+                            <option value="3">Merkezi Chiller (Sadece Isıtma/Soğutma)</option>
+                            <option value="1">Altyapı Yok / Bireysel Klima</option>
+                        </select>
+                    </div>
+
+                    <div>
+                        <label class="block text-xs font-bold text-slate-700 mb-1">Mevcut İnşaat / Fit-Out Durumu *</label>
+                        <select id="fitoutStatus" onchange="calculateScore()" class="w-full bg-slate-50 border border-slate-300 rounded-lg p-2.5 text-sm focus:ring-2 focus:ring-brand-red focus:outline-none">
+                            <option value="10">Hazır Fit-Out (Daha önce kurumsal şirket/ofis kullanmış)</option>
+                            <option value="7">Kısmen Tamamlanmış (Yükseltilmiş taban/Tesisat hazır)</option>
+                            <option value="4">Kabuk ve Çekirdek (Shell & Core - Sıfır kaba inşaat)</option>
+                        </select>
+                    </div>
+
+                    <div>
+                        <label class="block text-xs font-bold text-slate-700 mb-1">Jeneratör ve Elektrik Altyapısı *</label>
+                        <select id="generatorStatus" class="w-full bg-slate-50 border border-slate-300 rounded-lg p-2.5 text-sm focus:ring-2 focus:ring-brand-red focus:outline-none">
+                            <option value="full">Tam Beslemeli Jeneratör Var (%100 Bina Yükü)</option>
+                            <option value="partial">Kısmi Jeneratör (Sadece Ortak Alan/Aydınlatma)</option>
+                            <option value="none">Jeneratör Yok</option>
+                        </select>
+                    </div>
+
+                    <div>
+                        <label class="block text-xs font-bold text-slate-700 mb-1">Çevresel Sosyal Donatı ve AVM Yakınlığı *</label>
+                        <select id="socialAmenities" onchange="calculateScore()" class="w-full bg-slate-50 border border-slate-300 rounded-lg p-2.5 text-sm focus:ring-2 focus:ring-brand-red focus:outline-none">
+                            <option value="10">Yürüme Mesafesinde AVM + Yoğun Yeme-İçme/Restoran Alanı</option>
+                            <option value="7">Orta Yoğunlukta Yeme-İçme İmkânı</option>
+                            <option value="3">Sanayi Bölgesi / Yeme-İçme İmkânı Kısıtlı</option>
+                        </select>
+                    </div>
+                </div>
+            </section>
+
+            <section class="space-y-4">
+                <div class="flex items-center gap-3 border-b border-slate-200 pb-3">
+                    <div class="w-8 h-8 rounded-lg bg-red-100 text-brand-red flex items-center justify-center font-extrabold text-sm">4</div>
+                    <h2 class="text-lg font-bold text-slate-900">Mülk Sahibinin Anlaşma ve CapEx Yaklaşımı</h2>
+                </div>
+
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div>
+                        <label class="block text-xs font-bold text-slate-700 mb-1">Tercih Edilen Anlaşma Modeli *</label>
+                        <select id="contractModel" onchange="calculateScore()" class="w-full bg-slate-50 border border-slate-300 rounded-lg p-2.5 text-sm focus:ring-2 focus:ring-brand-red focus:outline-none">
+                            <option value="10">Hibrit Model (Garanti Taban Kira + Kâr Paylaşımı) [Önerilen]</option>
+                            <option value="9">Saf Yönetim Anlaşması (Management Agreement)</option>
+                            <option value="6">Sabit Kira + Kâr Paylaşımı</option>
+                            <option value="4">Sadece Yüksek Sabit Kira Talebi</option>
+                        </select>
+                    </div>
+
+                    <div>
+                        <label class="block text-xs font-bold text-slate-700 mb-1">CapEx (Tadilat/Fit-Out Yatırımı) Yaklaşımı *</label>
+                        <select id="capexApproach" class="w-full bg-slate-50 border border-slate-300 rounded-lg p-2.5 text-sm focus:ring-2 focus:ring-brand-red focus:outline-none">
+                            <option value="full">Mimari Dönüşüm Yatırım Bütçesini (CapEx) Karşılayabilir</option>
+                            <option value="partial">CapEx Yatırımını Kısmen Yapabilir / Finansmana Açık</option>
+                            <option value="ready">Mülk Hazırdır, Harcama Gerektirmez</option>
+                            <option value="none">CapEx Yatırımı Yapamaz (İşletmeci Yapmalı)</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div>
+                    <label class="block text-xs font-bold text-slate-700 mb-1">Varsa Mimari Plan / Fotoğraf / İskan Notları</label>
+                    <textarea id="notes" rows="3" placeholder="Görsel linkleri, DWG kat planı bağlantıları veya bina ile ilgili ek detaylar..." class="w-full bg-slate-50 border border-slate-300 rounded-lg p-2.5 text-sm focus:ring-2 focus:ring-brand-red focus:outline-none"></textarea>
+                </div>
+            </section>
+
+            <div id="liveScoreBanner" class="bg-slate-900 text-white rounded-2xl p-6 border-2 border-slate-700 shadow-xl flex flex-col md:flex-row justify-between items-center gap-6">
+                <div class="space-y-1 text-center md:text-left">
+                    <div class="text-xs uppercase font-extrabold tracking-wider text-brand-red">OTOMATİK LOKASYON UYGUNLUK SKORU</div>
+                    <div class="text-xl font-bold">Workinton Ön Fizibilite Değerlendirmesi</div>
+                    <p class="text-xs text-slate-400">Girdiğiniz verilere göre hesaplanan saha ziyareti öncelik puanı.</p>
+                </div>
+
+                <div class="flex items-center gap-6">
+                    <div class="text-center">
+                        <div id="scoreDisplay" class="text-4xl sm:text-5xl font-black text-amber-400">7.8</div>
+                        <div class="text-[10px] text-slate-400 uppercase tracking-widest mt-1">/ 10 PUAN</div>
+                    </div>
+
+                    <div id="scoreBadgeContainer" class="px-4 py-2 rounded-xl bg-emerald-500/20 text-emerald-300 border border-emerald-500/40 text-center">
+                        <div id="scoreBadgeStatus" class="font-bold text-sm">SAHA ZİYARETİNE UYGUN</div>
+                        <div id="scoreBadgeSub" class="text-[10px]">Ön Fizibilite Onaylandı</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- SUBMIT ACTION -->
+            <div class="flex flex-col sm:flex-row justify-between items-center gap-4 pt-4 border-t border-slate-200">
+                <button type="button" onclick="resetForm()" class="text-xs font-semibold text-slate-500 hover:text-slate-800 transition">
+                    <i class="fa-solid fa-rotate-left"></i> Formu Sıfırla
+                </button>
+                <button type="submit" class="w-full sm:w-auto bg-brand-red hover:bg-brand-darkRed text-white font-bold px-8 py-3.5 rounded-xl shadow-lg hover:shadow-red-900/30 transition flex items-center justify-center gap-2">
+                    <i class="fa-solid fa-paper-plane"></i>
+                    <span>Ön Değerlendirme Başvurusunu Tamamla</span>
+                </button>
+            </div>
+        </form>
+
+        <div id="adminView" class="hidden p-6 sm:p-10 space-y-8 bg-slate-900 text-white">
+            <div class="flex justify-between items-center border-b border-slate-800 pb-4">
+                <div>
+                    <h2 class="text-xl font-black text-white flex items-center gap-2">
+                        <i class="fa-solid fa-chart-pie text-brand-red"></i> Workinton İş Geliştirme İnceleme Ekranı
+                    </h2>
+                    <p class="text-xs text-slate-400">Form verilerine dayalı detaylı ağırlıklı lokasyon skorlama tablosu.</p>
+                </div>
+                <button onclick="window.print()" class="bg-slate-800 hover:bg-slate-700 text-slate-200 text-xs font-semibold px-3 py-2 rounded-lg border border-slate-700">
+                    <i class="fa-solid fa-print"></i> Raporu Yazdır
+                </button>
+            </div>
+
+            <!-- BREAKDOWN METRICS -->
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div class="bg-slate-800/80 p-5 rounded-xl border border-slate-700 space-y-3">
+                    <h3 class="text-sm font-bold text-red-400 uppercase tracking-wider">Ağırlıklı Skor Analizi</h3>
+                    
+                    <div class="space-y-2 text-xs">
+                        <div class="flex justify-between items-center">
+                            <span class="text-slate-300">Lokasyon &amp; Toplu Taşıma (%25)</span>
+                            <span id="scoreLocBreak" class="font-bold text-amber-400">8.0 / 10</span>
+                        </div>
+                        <div class="w-full bg-slate-700 h-1.5 rounded-full overflow-hidden">
+                            <div id="barLoc" class="bg-amber-400 h-full w-[80%]"></div>
+                        </div>
+
+                        <div class="flex justify-between items-center pt-1">
+                            <span class="text-slate-300">Tavan Yüksekliği &amp; Verimlilik (%20)</span>
+                            <span id="scoreArchBreak" class="font-bold text-amber-400">8.0 / 10</span>
+                        </div>
+                        <div class="w-full bg-slate-700 h-1.5 rounded-full overflow-hidden">
+                            <div id="barArch" class="bg-amber-400 h-full w-[80%]"></div>
+                        </div>
+
+                        <div class="flex justify-between items-center pt-1">
+                            <span class="text-slate-300">HVAC &amp; İklimlendirme Altyapısı (%20)</span>
+                            <span id="scoreHvacBreak" class="font-bold text-amber-400">10.0 / 10</span>
+                        </div>
+                        <div class="w-full bg-slate-700 h-1.5 rounded-full overflow-hidden">
+                            <div id="barHvac" class="bg-emerald-400 h-full w-[100%]"></div>
+                        </div>
+
+                        <div class="flex justify-between items-center pt-1">
+                            <span class="text-slate-300">Otopark &amp; Çevresel Sosyal Donatı (%15)</span>
+                            <span id="scoreParkBreak" class="font-bold text-amber-400">7.0 / 10</span>
+                        </div>
+                        <div class="w-full bg-slate-700 h-1.5 rounded-full overflow-hidden">
+                            <div id="barPark" class="bg-amber-400 h-full w-[70%]"></div>
+                        </div>
+
+                        <div class="flex justify-between items-center pt-1">
+                            <span class="text-slate-300">Mülk Sahibi Anlaşma Esnekliği (%20)</span>
+                            <span id="scoreContractBreak" class="font-bold text-amber-400">10.0 / 10</span>
+                        </div>
+                        <div class="w-full bg-slate-700 h-1.5 rounded-full overflow-hidden">
+                            <div id="barContract" class="bg-emerald-400 h-full w-[100%]"></div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- RECOMMENDATION BOX -->
+                <div class="bg-slate-800/80 p-5 rounded-xl border border-slate-700 flex flex-col justify-between">
+                    <div>
+                        <h3 class="text-sm font-bold text-red-400 uppercase tracking-wider mb-2">İş Geliştirme Karar Özeti</h3>
+                        <div id="adminDecisionText" class="text-xs text-slate-300 leading-relaxed space-y-2">
+                            <p class="font-semibold text-white">Aday Lokasyon Durumu: SAHA ZİYARETİ PLANLANACAK</p>
+                            <p>Bu lokasyon metro erişimi, tavan yüksekliği ve hazır fit-out yapısıyla Workinton standartlarını karşılamaktadır. Mülk sahibi ile Hibrit Ortaklık görüşmesine geçilebilir.</p>
+                        </div>
+                    </div>
+
+                    <div class="pt-4 border-t border-slate-700 flex gap-2">
+                        <button onclick="showNotification('Lokasyon onaylandı. Saha ekibine görev atandı.')" class="flex-1 bg-emerald-600 hover:bg-emerald-500 text-white font-bold py-2 px-3 rounded-lg text-xs">
+                            <i class="fa-solid fa-check"></i> Saha Ziyareti Onayı Ver
+                        </button>
+                        <button onclick="showNotification('Teknik yetersizlik gerekçesiyle reddedildi.')" class="bg-rose-900/50 hover:bg-rose-800 text-rose-200 font-bold py-2 px-3 rounded-lg text-xs border border-rose-700">
+                            <i class="fa-solid fa-xmark"></i> Reddet
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- FOOTER -->
+        <footer class="bg-slate-950 text-slate-500 text-xs p-6 text-center border-t border-slate-800">
+            <p>© 2026 Workinton Esnek Ofis ve Varlık Yönetimi A.Ş. • Kurumsal İş Geliştirme Direktörlüğü</p>
+            <p class="mt-1 text-[11px] text-slate-600">Bu form üzerinden iletilen bilgiler gizlilik ilkeleri kapsamında ön fizibilite simülasyonları için kullanılır.</p>
+        </footer>
+    </div>
+
+    <script>
+        function calculateScore() {
+            const metroScore = parseFloat(document.getElementById('metroDist').value) || 5;
+            const ceilingScore = parseFloat(document.getElementById('ceilingHeight').value) || 5;
+            const hvacScore = parseFloat(document.getElementById('hvacStatus').value) || 5;
+            const fitoutScore = parseFloat(document.getElementById('fitoutStatus').value) || 5;
+            const parkingScore = parseFloat(document.getElementById('parkingRatio').value) || 5;
+            const socialScore = parseFloat(document.getElementById('socialAmenities').value) || 5;
+            const contractScore = parseFloat(document.getElementById('contractModel').value) || 5;
+
+            // Calculate Net/Brüt efficiency
+            const gross = parseFloat(document.getElementById('grossArea').value) || 0;
+            const net = parseFloat(document.getElementById('netArea').value) || 0;
+            let efficiencyScore = 5;
+
+            if (gross > 0 && net > 0) {
+                const ratio = (net / gross) * 100;
+                document.getElementById('efficiencyDisplay').value = '%' + ratio.toFixed(1) + ' Verimlilik';
+                if (ratio >= 80) efficiencyScore = 10;
+                else if (ratio >= 70) efficiencyScore = 8;
+                else if (ratio >= 60) efficiencyScore = 5;
+                else efficiencyScore = 2;
+            } else {
+                document.getElementById('efficiencyDisplay').value = 'M² Giriniz';
+            }
+
+            // Weighted Workinton Criteria Algorithm
+            const scoreLoc = metroScore;
+            const scoreArch = (ceilingScore * 0.6) + (efficiencyScore * 0.4);
+            const scoreHvac = (hvacScore * 0.7) + (fitoutScore * 0.3);
+            const scorePark = (parkingScore * 0.5) + (socialScore * 0.5);
+            const scoreContract = contractScore;
+
+            const totalScore = (scoreLoc * 0.25) + (scoreArch * 0.20) + (scoreHvac * 0.20) + (scorePark * 0.15) + (scoreContract * 0.20);
+            const finalScore = totalScore.toFixed(1);
+
+            // Update UI elements
+            document.getElementById('scoreDisplay').innerText = finalScore;
+
+            // Admin Breakdowns
+            document.getElementById('scoreLocBreak').innerText = scoreLoc.toFixed(1) + ' / 10';
+            document.getElementById('barLoc').style.width = (scoreLoc * 10) + '%';
+
+            document.getElementById('scoreArchBreak').innerText = scoreArch.toFixed(1) + ' / 10';
+            document.getElementById('barArch').style.width = (scoreArch * 10) + '%';
+
+            document.getElementById('scoreHvacBreak').innerText = scoreHvac.toFixed(1) + ' / 10';
+            document.getElementById('barHvac').style.width = (scoreHvac * 10) + '%';
+
+            document.getElementById('scoreParkBreak').innerText = scorePark.toFixed(1) + ' / 10';
+            document.getElementById('barPark').style.width = (scorePark * 10) + '%';
+
+            document.getElementById('scoreContractBreak').innerText = scoreContract.toFixed(1) + ' / 10';
+            document.getElementById('barContract').style.width = (scoreContract * 10) + '%';
+
+            // Badge & Recommendation Status
+            const badgeContainer = document.getElementById('scoreBadgeContainer');
+            const badgeStatus = document.getElementById('scoreBadgeStatus');
+            const badgeSub = document.getElementById('scoreBadgeSub');
+            const adminText = document.getElementById('adminDecisionText');
+
+            if (totalScore >= 7.5) {
+                badgeContainer.className = "px-4 py-2 rounded-xl bg-emerald-500/20 text-emerald-300 border border-emerald-500/40 text-center";
+                badgeStatus.innerText = "SAHA ZİYARETİNE UYGUN";
+                badgeSub.innerText = "Ön Fizibilite Onaylandı";
+                adminText.innerHTML = `<p class="font-bold text-emerald-400">Aday Lokasyon Durumu: YÜKSEK POTANSİYEL (A+)</p><p>Bu gayrimenkul tavan yüksekliği, metro yakınlığı ve ticari esnekliği ile Workinton konsepti için son derece uygundur. Saha ziyaret randevusu 48 saat içinde verilebilir.</p>`;
+            } else if (totalScore >= 5.5) {
+                badgeContainer.className = "px-4 py-2 rounded-xl bg-amber-500/20 text-amber-300 border border-amber-500/40 text-center";
+                badgeStatus.innerText = "DÖNÜŞÜM İLE İNCELEMEDE";
+                badgeSub.innerText = "Teknik İnceleme Gerektirir";
+                adminText.innerHTML = `<p class="font-bold text-amber-400">Aday Lokasyon Durumu: ŞARTLI UYGUN (B+)</p><p>Lokasyon ticari açıdan uygun olmakla birlikte HVAC veya CapEx yatırımı gerektirebilir. Teknik ekibin yerinde inceleme yapması önerilir.</p>`;
+            } else {
+                badgeContainer.className = "px-4 py-2 rounded-xl bg-rose-500/20 text-rose-300 border border-rose-500/40 text-center";
+                badgeStatus.innerText = "ESNEK OFİSE UYGUN DEĞİL";
+                badgeSub.innerText = "Kriter Altı Lokasyon";
+                adminText.innerHTML = `<p class="font-bold text-rose-400">Aday Lokasyon Durumu: UYGUN DEĞİL</p><p>Metro mesafesi, tavan yüksekliği veya ticari şartlar Workinton esnek ofis standartlarının altındadır.</p>`;
+            }
+        }
+
+        function toggleView() {
+            const adminView = document.getElementById('adminView');
+            const toggleText = document.getElementById('viewToggleText');
+            
+            if (adminView.classList.contains('hidden')) {
+                adminView.classList.remove('hidden');
+                toggleText.innerText = "Form Moduna Dön";
+                window.scrollTo({ top: adminView.offsetTop - 20, behavior: 'smooth' });
+            } else {
+                adminView.classList.add('hidden');
+                toggleText.innerText = "Ekip / Skor Modu";
+            }
+        }
+
+        function showNotification(msg) {
+            const div = document.createElement('div');
+            div.className = "fixed bottom-5 right-5 bg-brand-red text-white text-xs font-bold px-4 py-3 rounded-xl shadow-2xl z-50 transition-all";
+            div.innerText = msg;
+            document.body.appendChild(div);
+            setTimeout(() => div.remove(), 3000);
+        }
+
+        function handleFormSubmit(e) {
+            e.preventDefault();
+            const owner = document.getElementById('ownerName').value;
+            const score = document.getElementById('scoreDisplay').innerText;
+            
+            showNotification(`Tebrikler! ${owner} başvurusu başarıyla alındı. Ön Fizibilite Skoru: ${score} / 10`);
+        }
+
+        function resetForm() {
+            document.getElementById('evaluationForm').reset();
+            calculateScore();
+        }
+
+        // Initialize score calculation on window load
+        window.onload = function() {
+            calculateScore();
+        };
+    </script>
+</body>
+</html>
